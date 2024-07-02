@@ -1,10 +1,7 @@
-# Chequear privilegios de administrador
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-$delay = 2
-if (-not $isAdmin) {
-    [System.Windows.Forms.MessageBox]::Show("Run the script as an administrator", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
-    Start-Sleep -Seconds $delay
-    Exit
+# Check administrator privileges
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Start-Process powershell "-File `"$PSCommandPath`"" -Verb RunAs
+    exit
 }
 
 Add-Type -AssemblyName System.Windows.Forms
