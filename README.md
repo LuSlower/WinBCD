@@ -9,6 +9,6 @@ instale windows sin memorias externas
 
 - Seleccione la partición en la que desea extraer la imagen o puede seleccionar la imagen y darle al botòn `Create Partition` esto creara una partición con el nombre de la imagen
 - Puede seleccionar las ediciones durante la instalación, si desea abortar presione `Cancel` o `X`
-- Esta herramienta se basa en [código abierto](https://github.com/iidanL/InstallWindowsWithoutUSB)
+- Esta herramienta se basa en código abierto [1](https://github.com/iidanL/InstallWindowsWithoutUSB)[2](https://github.com/he3als/windows-no-usb)
 
 
