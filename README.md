@@ -3,7 +3,7 @@
 
 instale windows sin memorias externas
 
-![image](https://github.com/LuSlower/WinBCD/assets/148411728/5a41a653-e356-400d-9dbc-57b99dd64042)
+![image](https://github.com/user-attachments/assets/3c20ea34-c479-4dc1-8f97-70d10723b345)
 
 # INFO
 
