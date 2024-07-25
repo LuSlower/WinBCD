@@ -161,30 +161,37 @@ Console -Hide
 [System.Windows.Forms.Application]::EnableVisualStyles();
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "WinBCD"
-$form.Size = New-Object System.Drawing.Size(330, 135)
+$form.ClientSize = New-Object System.Drawing.Size(300, 100)
 $form.StartPosition = "CenterScreen"
 $form.MaximizeBox = $false
+$form.MinimizeBox = $false
 $form.AllowDrop = $true
 $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
+$form.KeyPreview = $true
+$form.Add_KeyDown({
+    param($sender, $e)
+    if ($e.KeyCode -eq [System.Windows.Forms.Keys]::F5) {
+        Refresh-Partitions
+    }
+})
 
-# ComboBox para enumerar particiones
+
+# Enumerar particiones
 $comboBox = New-Object System.Windows.Forms.ComboBox
-$comboBox.Location = New-Object System.Drawing.Point(10, 10)
-$comboBox.Size = New-Object System.Drawing.Size(250, 20)
+$comboBox.Location = New-Object System.Drawing.Point(65, 10)
+$comboBox.Size = New-Object System.Drawing.Size(180, 20)
 $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
 
 
-# TextBox para mostrar el nombre de la imagen
 $textBox = New-Object System.Windows.Forms.TextBox
 $textBox.Location = New-Object System.Drawing.Point(10, 40)
 $textBox.Size = New-Object System.Drawing.Size(250, 20)
 $textBox.Enabled = $false
 
-# OpenFileDialog para seleccionar la imagen 
+# OpenFileDialog para seleccionar la imagen
 $openFileDialog = New-Object System.Windows.Forms.OpenFileDialog
 $openFileDialog.Filter = "ISO Files (*.iso)|*.iso|WIM Files (*.wim)|*.wim|ESD Files (*.esd)|*.esd"
 
-# Boton para mostrar el OpenFileDialog
 $buttonSelectFile = New-Object System.Windows.Forms.Button
 $buttonSelectFile.Location = New-Object System.Drawing.Point(270, 40)
 $buttonSelectFile.Size = New-Object System.Drawing.Size(25, 20)
@@ -196,9 +203,9 @@ $buttonSelectFile.Add_Click({
     }
 })
 
-# Boton para instalar la image en la particion seleccionada
+# Instalar
 $buttonInstall = New-Object System.Windows.Forms.Button
-$buttonInstall.Location = New-Object System.Drawing.Point(10, 70)
+$buttonInstall.Location = New-Object System.Drawing.Point(50, 70)
 $buttonInstall.Size = New-Object System.Drawing.Size(75, 23)
 $buttonInstall.Text = "Install"
 $buttonInstall.Add_Click({
@@ -206,7 +213,7 @@ $buttonInstall.Add_Click({
     # Obtener la ruta de la imagen
     $filePath = $textBox.Text
     if ([string]::IsNullOrEmpty($filePath)) {
-        [System.Windows.Forms.MessageBox]::Show("An error occurred while trying to mount the ISO.", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+        [System.Windows.Forms.MessageBox]::Show("Specify an ISO image", "Info", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
         return
     }
 
@@ -221,8 +228,7 @@ $buttonInstall.Add_Click({
             try {
                 Mount-DiskImage -ImagePath "$filePath" | Out-Null 
             } catch {
-                Write-Host "An error occurred while trying to mount the ISO.`nError: $($_.Exception.Message)`n" -ForegroundColor Red
-                [System.Windows.Forms.MessageBox]::Show("An error occurred while trying to mount the ISO.", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+                [System.Windows.Forms.MessageBox]::Show("An error occurred while trying to mount the ISO", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
                 return
             }
 
@@ -236,7 +242,7 @@ $buttonInstall.Add_Click({
             } elseif (Test-Path $wimPath) {
                 $imgPath = $wimPath
             } else {
-                [System.Windows.Forms.MessageBox]::Show("The selected ISO does not appear to be a Windows ISO. The ISO must contain either install.esd or install.wim in the 'sources' folder.", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+                [System.Windows.Forms.MessageBox]::Show("The selected ISO does not appear to be a Windows ISO. The ISO must contain either install.esd or install.wim in the 'sources' folder", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
                 Dismount-DiskImage -ImagePath "$filePath"
                 return
             }
@@ -283,22 +289,14 @@ $buttonInstall.Add_Click({
         }
         Dismount-DiskImage -ImagePath "$filePath"
     } else {
-        Write-Host "Mounting canceled." -ForegroundColor Yellow
+        Write-Host "Mounting canceled" -ForegroundColor Yellow
         return
     }
 })
 
-
-$buttonRefresh = New-Object System.Windows.Forms.Button
-$buttonRefresh.Location = New-Object System.Drawing.Point(100, 70)
-$buttonRefresh.Size = New-Object System.Drawing.Size(75, 23)
-$buttonRefresh.Text = "Refresh"
-$buttonRefresh.Add_Click({
-    Refresh-Partitions
-})
-
+# Crear Particion
 $buttonCreatePartition = New-Object System.Windows.Forms.Button
-$buttonCreatePartition.Location = New-Object System.Drawing.Point(190, 70)
+$buttonCreatePartition.Location = New-Object System.Drawing.Point(140, 70)
 $buttonCreatePartition.Size = New-Object System.Drawing.Size(120, 23)
 $buttonCreatePartition.Text = "Create Partition"
 $buttonCreatePartition.Enabled = $false
@@ -311,7 +309,6 @@ $form.Controls.Add($comboBox)
 $form.Controls.Add($textBox)
 $form.Controls.Add($buttonSelectFile)
 $form.Controls.Add($buttonInstall)
-$form.Controls.Add($buttonRefresh)
 $form.Controls.Add($buttonCreatePartition)
 
 # Drag & Drop
