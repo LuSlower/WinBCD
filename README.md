@@ -3,7 +3,7 @@
 
 install windows without external memory
 
-![image](https://github.com/user-attachments/assets/3c20ea34-c479-4dc1-8f97-70d10723b345)
+![image](https://github.com/user-attachments/assets/c9879637-5424-4b5e-975b-6b41ac882bcc)
 
 # INFO
 
