@@ -32,10 +32,6 @@ function Console {
         $consolePtr = [Console.Window]::GetConsoleWindow()
         $null = [Console.Window]::ShowWindow($consolePtr, 0)
     }
-
-    if ($Text) {
-        $syncHash.TextBoxOutPut.AppendText("$Text`r`n")
-    }
 }
 
 # Funcion para mostrar un dialogo desplegable
@@ -175,11 +171,27 @@ $form.Add_KeyDown({
     }
 })
 
+$form.Add_Paint({
+    param (
+        [object]$sender,
+        [System.Windows.Forms.PaintEventArgs]$e
+    )
+    $rect = New-Object System.Drawing.Rectangle(0, 0, $sender.Width, $sender.Height)
+    $brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
+        $rect,
+        [System.Drawing.Color]::FromArgb(44, 44, 44),   # Color negro
+        [System.Drawing.Color]::FromArgb(99, 99, 99),# Color gris oscuro
+        [System.Drawing.Drawing2D.LinearGradientMode]::Vertical
+    )
+    $e.Graphics.FillRectangle($brush, $rect)
+})
 
 # Enumerar particiones
 $comboBox = New-Object System.Windows.Forms.ComboBox
 $comboBox.Location = New-Object System.Drawing.Point(65, 10)
 $comboBox.Size = New-Object System.Drawing.Size(180, 20)
+$comboBox.BackColor = [System.Drawing.Color]::FromArgb(44, 44, 44)
+$comboBox.ForeColor = [System.Drawing.Color]::White
 $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
 
 
@@ -187,6 +199,9 @@ $textBox = New-Object System.Windows.Forms.TextBox
 $textBox.Location = New-Object System.Drawing.Point(10, 40)
 $textBox.Size = New-Object System.Drawing.Size(250, 20)
 $textBox.Enabled = $false
+$textBox.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+$textBox.BackColor = [System.Drawing.Color]::FromArgb(44, 44, 44)
+$textBox.ForeColor = [System.Drawing.Color]::White
 
 # OpenFileDialog para seleccionar la imagen
 $openFileDialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -196,6 +211,10 @@ $buttonSelectFile = New-Object System.Windows.Forms.Button
 $buttonSelectFile.Location = New-Object System.Drawing.Point(270, 40)
 $buttonSelectFile.Size = New-Object System.Drawing.Size(25, 20)
 $buttonSelectFile.Text = "..."
+$buttonSelectFile.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$buttonSelectFile.BackColor = [System.Drawing.Color]::FromArgb(44, 44, 44)
+$buttonSelectFile.ForeColor = [System.Drawing.Color]::White
+$buttonSelectFile.FlatAppearance.BorderSize = 0
 $buttonSelectFile.Add_Click({
     if ($openFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
         $textBox.Text = $openFileDialog.FileName
@@ -208,6 +227,10 @@ $buttonInstall = New-Object System.Windows.Forms.Button
 $buttonInstall.Location = New-Object System.Drawing.Point(50, 70)
 $buttonInstall.Size = New-Object System.Drawing.Size(75, 23)
 $buttonInstall.Text = "Install"
+$buttonInstall.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$buttonInstall.BackColor = [System.Drawing.Color]::FromArgb(44, 44, 44)
+$buttonInstall.ForeColor = [System.Drawing.Color]::White
+$buttonInstall.FlatAppearance.BorderSize = 0
 $buttonInstall.Add_Click({
     
     # Obtener la ruta de la imagen
@@ -300,6 +323,10 @@ $buttonCreatePartition.Location = New-Object System.Drawing.Point(140, 70)
 $buttonCreatePartition.Size = New-Object System.Drawing.Size(120, 23)
 $buttonCreatePartition.Text = "Create Partition"
 $buttonCreatePartition.Enabled = $false
+$buttonCreatePartition.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$buttonCreatePartition.BackColor = [System.Drawing.Color]::FromArgb(44, 44, 44)
+$buttonCreatePartition.ForeColor = [System.Drawing.Color]::White
+$buttonCreatePartition.FlatAppearance.BorderSize = 0
 $buttonCreatePartition.Add_Click({
     Create-Partition -filePath $textBox.Text
 })
